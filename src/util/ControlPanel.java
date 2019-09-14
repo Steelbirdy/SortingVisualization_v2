@@ -1,11 +1,12 @@
 package util;
 
-import algorithms.*;
+import algorithms.Algorithms;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * The ControlPanel is a secondary window that allows the user to control many more aspects
@@ -19,7 +20,7 @@ public class ControlPanel implements Runnable {
     //Don't change these
     private final static int WINDOW_WIDTH = 246;
     private final static int WINDOW_HEIGHT = 550;
-    private final static ArrayList<Algorithm> ALL_ALGORITHMS = new ArrayList<>();
+    private final static ArrayList<Algorithms> ALL_ALGORITHMS = new ArrayList<>();
 
     //Declare components of the JFrame
     private JFrame frmControl;
@@ -28,12 +29,12 @@ public class ControlPanel implements Runnable {
     private JSpinner spnrDelay;
     private JLabel lblDelay;
     private JButton btnListUp, btnListDown, btnListAdd, btnListRemove, btnListEdit;
-    private JList<Algorithm> sortList;
+    private JList<Algorithms> sortList;
     private JCheckBox chkbxStop;
     private JScrollPane pnList;
 
     //The order of algorithms to run
-    private ArrayList<Algorithm> sortingOrder;
+    private ArrayList<Algorithms> sortingOrder;
 
     //Default constructor
     public ControlPanel() {}
@@ -45,18 +46,9 @@ public class ControlPanel implements Runnable {
 
         initComponents();
 
-        initDefaultSortingOrder();
+        Collections.addAll(ALL_ALGORITHMS, Algorithms.values());
 
-        ALL_ALGORITHMS.add(new BubbleSort());
-        ALL_ALGORITHMS.add(new CombSort());
-        ALL_ALGORITHMS.add(new HeapSort());
-        ALL_ALGORITHMS.add(new InsertionSort());
-        ALL_ALGORITHMS.add(new MergeSort());
-        ALL_ALGORITHMS.add(new QuickSort());
-        ALL_ALGORITHMS.add(new RadixSort());
-        ALL_ALGORITHMS.add(new SelectionSort());
-        ALL_ALGORITHMS.add(new ShellSort());
-        ALL_ALGORITHMS.add(new TimSort());
+        initDefaultSortingOrder();
 
         frmControl.setVisible(true);
 
@@ -207,7 +199,7 @@ public class ControlPanel implements Runnable {
         // btnListAdd opens a dialog that allows the user to add another algorithm to the list
         btnListAdd = new JButton("Add");
         btnListAdd.addActionListener(e -> {
-            Algorithm toAdd = new SortDialog().getResult();
+            Algorithms toAdd = new SortDialog().getResult();
             ((SortingListModel) sortList.getModel()).addElement(toAdd, 0);
             sortList.setSelectedIndex(0);
         });
@@ -238,29 +230,22 @@ public class ControlPanel implements Runnable {
 
         sortingOrder = new ArrayList<>();
 
-        sortingOrder.add(new TimSort());
-        sortingOrder.add(new RadixSort());
-        sortingOrder.add(new CombSort());
-        sortingOrder.add(new ShellSort());
-        sortingOrder.add(new HeapSort());
-        sortingOrder.add(new SelectionSort());
-        sortingOrder.add(new MergeSort());
-        sortingOrder.add(new QuickSort());
-        sortingOrder.add(new InsertionSort());
-        sortingOrder.add(new BubbleSort()); //BubbleSort takes absolutely forever to show with arrays of size 1280
+        Collections.addAll(sortingOrder, Algorithms.values());
 
         ((SortingListModel) sortList.getModel()).addElements(sortingOrder);
 
     }
 
     //Access to the algorithms that need to be run
-    public ArrayList<Algorithm> getSortingOrder() { return this.sortingOrder; }
+    public ArrayList<Algorithms> getSortingOrder() {
+        return this.sortingOrder;
+    }
 
     /**
      * Cuts the next algorithm from the list to prepare for it running next
      * @return the algorithm that was cut
      */
-    public Algorithm cutSort() {
+    public Algorithms cutSort() {
         try {
             if (sortList.getModel().getElementAt(0) != null)
                 return ((SortingListModel) sortList.getModel()).removeElement(0);
@@ -295,34 +280,34 @@ public class ControlPanel implements Runnable {
      * A custom list model that allows greater accessibility to the algorithms listed.
      * Also ensures that the list updates correctly
      */
-    public class SortingListModel extends AbstractListModel<Algorithm> {
+    public class SortingListModel extends AbstractListModel<Algorithms> {
 
-        private final ArrayList<Algorithm> listData = new ArrayList<>();
+        private final ArrayList<Algorithms> listData = new ArrayList<>();
 
         public void swapElements(int index0, int index1) {
-            Algorithm temp0 = removeElement(index0), temp1 = removeElement(index1 - 1);
+            Algorithms temp0 = removeElement(index0), temp1 = removeElement(index1 - 1);
             addElement(temp1, index0);
             addElement(temp0, index1);
         }
 
-        public void addElement(Algorithm object) {
+        public void addElement(Algorithms object) {
             sortingOrder.add(object);
             fireIntervalAdded(this, listData.size() - 1, listData.size() - 1);
         }
 
-        public void addElement(Algorithm object, int index) {
+        public void addElement(Algorithms object, int index) {
             sortingOrder.add(index, object);
             fireIntervalAdded(this, index, index);
         }
 
-        public void addElements(ArrayList<Algorithm> arr) {
+        public void addElements(ArrayList<Algorithms> arr) {
             int ind = listData.size();
             listData.addAll(arr);
             fireIntervalAdded(this, ind, listData.size() - 1);
         }
 
-        public Algorithm removeElement(int index) {
-            Algorithm tr = sortingOrder.remove(index);
+        public Algorithms removeElement(int index) {
+            Algorithms tr = sortingOrder.remove(index);
             fireIntervalRemoved(this, index, index);
             return tr;
         }
@@ -333,7 +318,7 @@ public class ControlPanel implements Runnable {
         }
 
         @Override
-        public Algorithm getElementAt(int index) {
+        public Algorithms getElementAt(int index) {
             return sortingOrder.get(index);
         }
     }
@@ -341,7 +326,7 @@ public class ControlPanel implements Runnable {
     public class SortDialog extends JDialog {
 
         private JPanel contentPane;
-        private JComboBox<Algorithm> chooser;
+        private JComboBox<Algorithms> chooser;
         private JButton btnClose;
 
         private final static int FRAME_WIDTH = 100;
@@ -369,8 +354,8 @@ public class ControlPanel implements Runnable {
             setVisible(true);
         }
 
-        public Algorithm getResult() {
-            return (Algorithm) chooser.getSelectedItem();
+        public Algorithms getResult() {
+            return (Algorithms) chooser.getSelectedItem();
         }
 
     }

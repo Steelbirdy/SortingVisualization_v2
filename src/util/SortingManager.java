@@ -1,6 +1,7 @@
 package util;
 
-import algorithms.*;
+import algorithms.Algorithms;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class SortingManager implements Runnable {
     private JFrame frame;
     private JButton btnPause;
     private ArrayToSort array;
-    private ArrayList<Algorithm> sorting;
+    private ArrayList<Algorithms> sorting;
     private long currentTime;
 
     //The current delay, in milliseconds, after a write to the array
@@ -98,7 +99,7 @@ public class SortingManager implements Runnable {
 
         this.sorting = GlobalManager.getSortingOrder();
 
-        Algorithm temp;
+        Algorithms temp;
 
         while((temp = GlobalManager.getNextSort()) != null) {
 

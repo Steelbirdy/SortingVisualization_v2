@@ -1,6 +1,6 @@
 package util;
 
-import algorithms.Algorithm;
+import algorithms.Algorithms;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,7 +34,9 @@ public class GlobalManager {
         sorting_manager_thread.start();
     }
 
-    public static ArrayList<Algorithm> getSortingOrder() { return control.getSortingOrder(); }
+    public static ArrayList<Algorithms> getSortingOrder() {
+        return control.getSortingOrder();
+    }
 
     public static boolean isPaused() { return global_paused; }
     public static boolean togglePaused() {
@@ -43,7 +45,7 @@ public class GlobalManager {
         return global_paused;
     }
 
-    public static Algorithm getNextSort() {
+    public static Algorithms getNextSort() {
         return control.cutSort();
     }
 
